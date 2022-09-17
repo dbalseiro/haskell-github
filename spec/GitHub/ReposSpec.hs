@@ -3,7 +3,7 @@ module GitHub.ReposSpec where
 
 import GitHub
        (Auth (..), FetchCount (..), Repo (..), RepoPublicity (..), github,
-       repositoryR)
+       repositoryR, contentsForR)
 import GitHub.Endpoints.Repos (currentUserReposR, languagesForR, userReposR)
 
 import Data.Either.Compat (isRight)
@@ -50,3 +50,13 @@ spec = do
       ls <- github auth languagesForR "haskell-github" "github"
       ls `shouldSatisfy` isRight
       fromRightS ls `shouldSatisfy` HM.member "Haskell"
+
+  describe "contentsFor" $ do
+    it "works" $ withAuth $ \auth -> do
+      cs <- github auth contentsForR "haskell-github" "github" "" (Just "v0.28")
+      cs `shouldSatisfy` isRight
+
+  describe "contentsFor contains link" $ do
+    it "works" $ withAuth $ \auth -> do
+      cs <- github auth contentsForR "haskell-github" "github" "samples" (Just "v0.28")
+      cs `shouldSatisfy` isRight
